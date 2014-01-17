@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Kamedia GPS course format for Moodle - http://moodle.org/
+// This file is part of the GPS free course format for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ require_once($CFG->dirroot . '/course/format/renderer.php');
 require_once($CFG->dirroot . '/course/format/gps/locallib.php');
 
 /**
- * Basic renderer for gps pro format.
+ * Basic renderer for gps free format.
  *
  * @copyright 2013 Barry Oosthuizen
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -46,8 +46,9 @@ class format_gps_renderer extends format_section_renderer_base {
      */
     public function print_single_section_page($course, $sections, $mods, $modnames, $modnamesused, $displaysection) {
         global $PAGE, $SESSION, $DB;
+
         $updateposition = get_string('updateposition', 'format_gps');
-        $modaldiv = html_writer::div($updateposition, 'updateposition hide', array('id' => 'updatepositionclick'));
+        $modaldiv = html_writer::tag('div', $updateposition, array('id' => 'updatepositionclick', 'class' => 'updateposition hide'));
         echo $modaldiv;
 
         // Module form with map.
@@ -56,9 +57,9 @@ class format_gps_renderer extends format_section_renderer_base {
                                 html_writer::link($viewcourse,
                                 get_string('updatepage', 'format_gps'),
                                 array('class' => 'gps-continue'));
-        $map = html_writer::div('', 'googlemap', array('id' => 'map'));
-        $mapcontainer = html_writer::div($map, 'mapcontainer', array('id' => 'mapcontainer'));
-        $modalform = html_writer::div($mapcontainer . $updatecourseviewlink, 'popupgeo', array('id' => 'popupgeo'));
+        $map = html_writer::tag('div', '', array('id' => 'map', 'class' => 'googlemap'));
+        $mapcontainer = html_writer::tag('div', $map, array('id' => 'mapcontainer', 'class' => 'mapcontainer'));
+        $modalform = html_writer::tag('div', $mapcontainer . $updatecourseviewlink, array('id' => 'popupgeo', 'class' => 'popupgeo'));
         echo $modalform;
 
         $modinfo = get_fast_modinfo($course);
@@ -117,7 +118,7 @@ class format_gps_renderer extends format_section_renderer_base {
             $courserenderer = $PAGE->get_renderer('core', 'course');
             print_section($course, $thissection, null, null, true, "100%", false, $displaysection);
             if ($PAGE->user_is_editing()) {
-                echo $courserenderer->course_section_add_cm_control($course, 0, $displaysection);
+                print_section_add_menus($course, 0, null, false, false, $displaysection);
             }
             echo $this->section_footer();
             echo $this->end_section_list();
@@ -150,10 +151,10 @@ class format_gps_renderer extends format_section_renderer_base {
         echo $completioninfo->display_help_icon();
 
         $courserenderer = $PAGE->get_renderer('core', 'course');
-        echo $courserenderer->course_section_cm_list($course, $thissection, $displaysection);
+        print_section($course, $thissection, null, null, true, '100%', false, $displaysection);
 
         if ($PAGE->user_is_editing()) {
-            echo $courserenderer->course_section_add_cm_control($course, $thissection, $displaysection);
+            print_section_add_menus($course, $displaysection, null, false, false, $displaysection);
         }
         echo $this->section_footer();
         echo $this->end_section_list();
@@ -185,22 +186,27 @@ class format_gps_renderer extends format_section_renderer_base {
         global $PAGE, $SESSION, $DB, $USER;
 
         $updateposition = get_string('updateposition', 'format_gps');
-        $loadinggps = html_writer::div(get_string('loadinggps', 'format_gps'), 'loadinggps');
+        $loadinggps = html_writer::tag('div', get_string('loadinggps', 'format_gps'), array('class' => 'loadinggps'));
         echo $loadinggps;
-        $modaldiv = html_writer::div($updateposition, 'updateposition hide', array('id' => 'updatepositionclick'));
+
+        $modaldiv = html_writer::tag('div', $updateposition, array('class' => 'updateposition hide', 'id' => 'updatepositionclick'));
+
         echo $modaldiv;
 
         // Module form with map.
         $viewcourse = new moodle_url('/course/view.php', array('id' => $course->id));
+
         $link = html_writer::link($viewcourse,
                                 get_string('update'),
                                 array('class' => 'gps-continue'));
-        $innerdiv = html_writer::div($link, 'innerdiv', array('id' => 'innerdiv'));
-        $updatecourseviewlink = html_writer::div(($innerdiv), 'buttonbubble', array('id' => 'outerdiv'));
-        $map = html_writer::div('', 'googlemap', array('id' => 'map'));
-        $mapcontainer = html_writer::div($map . $updatecourseviewlink, 'mapcontainer', array('id' => 'mapcontainer'));
-        $modalform = html_writer::div($mapcontainer, 'popupgeo', array('id' => 'popupgeo'));
+        $innerdiv = html_writer::tag('div', $link, array('id' => 'innerdiv', 'class' => 'innerdiv'));
+        $updatecourseviewlink = html_writer::tag('div', $innerdiv, array('id' => 'outerdiv', 'class' => 'buttonbubble'));
+        $map = html_writer::tag('div', '', array('id' => 'map', 'class' => 'googlemap'));
+        $mapcontainer = html_writer::tag('div', $map . $updatecourseviewlink, array('id' => 'mapcontainer', 'class' => 'mapcontainer'));
+        $modalform = html_writer::tag('div', $mapcontainer, array('id' => 'popupgeo', 'class' => 'popupgeo'));
+
         echo $modalform;
+
         $modinfo = get_fast_modinfo($course);
 
         $course = course_get_format($course)->get_course();
@@ -226,9 +232,9 @@ class format_gps_renderer extends format_section_renderer_base {
                 if ($thissection->summary or !empty($modinfo->sections[0]) or $PAGE->user_is_editing()) {
                     echo $this->section_header($thissection, $course, false, 0);
                     $courserenderer = $PAGE->get_renderer('core', 'course');
-                    echo $courserenderer->course_section_cm_list($course, $thissection, 0);
+                    print_section($course, $thissection, null, null, true, "100%", false, 0);
                     if ($PAGE->user_is_editing()) {
-                        echo $courserenderer->course_section_add_cm_control($course, 0, 0);
+                        print_section_add_menus($course, 0, null, false, false, 0);
                     }
                     echo $this->section_footer();
                 }
@@ -287,9 +293,9 @@ class format_gps_renderer extends format_section_renderer_base {
                 echo $this->section_header($thissection, $course, false, 0);
                 if ($thissection->uservisible) {
                     $courserenderer = $PAGE->get_renderer('core', 'course');
-                    echo $courserenderer->course_section_cm_list($course, $thissection, 0);
+                    print_section($course, $thissection, null, null, true, "100%", false, 0);
                     if ($PAGE->user_is_editing()) {
-                        echo $courserenderer->course_section_add_cm_control($course, $section, 0);
+                        print_section_add_menus($course, $section, null, false, false, 0);
                     }
                 }
                 echo $this->section_footer();
@@ -305,7 +311,7 @@ class format_gps_renderer extends format_section_renderer_base {
                 }
                 echo $this->stealth_section_header($section);
                 $courserenderer = $PAGE->get_renderer('core', 'course');
-                echo $courserenderer->course_section_cm_list($course, $thissection, 0);
+                print_section($course, $thissection, null, null, true, "100%", false, 0);
                 echo $this->stealth_section_footer();
             }
             echo $this->end_section_list();

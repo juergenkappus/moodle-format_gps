@@ -73,13 +73,6 @@ body.format-gps .gps-continue:active {
     height: 100%;
     margin:0 auto;
 }
-
-#mapcontaineredit img { max-width:none; }
-#mapcontaineredit {
-    width: 400px;
-    height: 350px;
-}
-
 .popupgeo {
     display: none;
 }
@@ -115,16 +108,6 @@ div#updatepositionclick.updateposition.hide {
 .googlemap {
     background: #000000;
     padding-bottom: 50px;
-}
-
-.googlemapedit {
-    width: 400px;
-    height: 350px;
-}
-
-#mapedit {
-    width: 100%;
-    height: 100%
 }
 
 #outerdiv {

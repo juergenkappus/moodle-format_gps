@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Kamedia GPS course format for Moodle - http://moodle.org/
+// This file is part of the GPS free course format for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -106,7 +106,7 @@ class format_gps_haversine {
 
     public function __construct($x1, $y1, $x2, $y2) {
 
-        $this->radius = 6378100; // Meters.
+        $this->radius = 6378100;
         $this->distance = $this->get_distance($x1, $y1, $x2, $y2);
     }
 

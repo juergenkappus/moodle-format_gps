@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Kamedia GPS course format for Moodle - http://moodle.org/
+// This file is part of the GPS free course format for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
-    // Can edit the course section colours.
+    // Can edit the course section.
     'format/gps:editsection_geo' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,

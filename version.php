@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Kamedia GPS course format for Moodle - http://moodle.org/
+// This file is part of the GPS free course format for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details for the Kamedia GPS course format.
+ * Version details for the GPS free course format.
  *
  * @package    format_gps
  * @copyright  2013 Barry Oosthuizen

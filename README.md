@@ -1,4 +1,4 @@
-moodle-format_gps_mdl25
+moodle-format_gps_mdl24
 =======================
 ################################################################################
 #                      Kamedia GPS Format - Version 1.3                        #

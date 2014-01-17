@@ -205,7 +205,6 @@ YUI().use('event', 'transition', 'panel', 'node', function(Y) {
         }
 
         height = pageheight - 50;
-
         if (height > winheight) {
             height = winheight - 100;
         }

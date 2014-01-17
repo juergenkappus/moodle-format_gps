@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Kamedia GPS course format for Moodle - http://moodle.org/
+// This file is part of the GPS free course format for Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -434,6 +434,7 @@ class format_gps extends format_base {
             $mform->disabledIf('format_gps_address', 'format_gps_restricted', 'notchecked');
             $mform->disabledIf('format_gps_latitude', 'format_gps_restricted', 'notchecked');
             $mform->disabledIf('format_gps_longitude', 'format_gps_restricted', 'notchecked');
+
         }
     }
 
