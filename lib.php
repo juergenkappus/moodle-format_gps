@@ -77,6 +77,7 @@ class format_gps extends format_base {
      * @return null|moodle_url
      */
     public function get_view_url($section, $options = array()) {
+		$usercoursedisplay = COURSE_DISPLAY_MULTIPAGE;
         $course = $this->get_course();
         $url = new moodle_url('/course/view.php', array('id' => $course->id));
 
@@ -91,23 +92,12 @@ class format_gps extends format_base {
         }
         if ($sectionno !== null) {
             if ($sr !== null) {
-                if ($sr) {
                     $usercoursedisplay = COURSE_DISPLAY_MULTIPAGE;
                     $sectionno = $sr;
-                } else {
-                    $usercoursedisplay = COURSE_DISPLAY_SINGLEPAGE;
-                }
             } else {
                 $usercoursedisplay = $course->coursedisplay;
             }
-            if ($sectionno != 0 && $usercoursedisplay == COURSE_DISPLAY_MULTIPAGE) {
-                $url->param('section', $sectionno);
-            } else {
-                if (!empty($options['navigation'])) {
-                    return null;
-                }
-                $url->set_anchor('section-' . $sectionno);
-            }
+            $url->param('section', $sectionno);
         }
         return $url;
     }
@@ -247,7 +237,7 @@ class format_gps extends format_base {
                     'element_attributes' => array(
                         array(
                             COURSE_DISPLAY_SINGLEPAGE => new lang_string('coursedisplay_single'),
-                            COURSE_DISPLAY_MULTIPAGE => new lang_string('coursedisplay_multi')
+                            //COURSE_DISPLAY_MULTIPAGE => new lang_string('coursedisplay_multi')
                         )
                     ),
                     'help' => 'coursedisplay',
@@ -429,8 +419,8 @@ class format_gps extends format_base {
             $mform->addRule('format_gps_longitude', null, 'numeric', null, 'client');
             $mform->addRule('format_gps_longitude', null, 'numeric', null, 'client');
             $mform->addRule('format_gps_latitude', null, 'numeric', null, 'client');
-            $mform->setType('format_gps_latitude', PARAM_FLOAT);
-            $mform->setType('format_gps_longitude', PARAM_FLOAT);
+            $mform->setType('format_gps_latitude', PARAM_RAW);
+            $mform->setType('format_gps_longitude', PARAM_RAW);
             $mform->disabledIf('format_gps_address', 'format_gps_restricted', 'notchecked');
             $mform->disabledIf('format_gps_latitude', 'format_gps_restricted', 'notchecked');
             $mform->disabledIf('format_gps_longitude', 'format_gps_restricted', 'notchecked');

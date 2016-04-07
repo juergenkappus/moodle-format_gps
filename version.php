@@ -18,14 +18,14 @@
  * Version details for the Kamedia GPS course format.
  *
  * @package    format_gps
- * @copyright  2013 Barry Oosthuizen
+ * @copyright  kamedia - 2014 Barry Oosthuizen
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2013091800;
-$plugin->requires  = 2012112900;
+$plugin->version   = 2016032200;
+$plugin->requires  = 2013040500;
 $plugin->component = 'format_gps';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.3';
+$plugin->release = '1.4.1';

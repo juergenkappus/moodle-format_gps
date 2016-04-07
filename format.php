@@ -49,11 +49,8 @@ course_create_sections_if_missing($course, range(0, $course->numsections));
 
 $renderer = $PAGE->get_renderer('format_gps');
 
-if (!empty($displaysection)) {
-    $renderer->print_single_section_page($course, null, null, null, null, $displaysection);
-} else {
-    $renderer->print_multiple_section_page($course, null, null, null, null);
-}
+$renderer->print_multiple_section_page($course, null, null, null, null);
+
 $PAGE->requires->yui_module('moodle-format_gps-geo', 'M.format_gps.init_geo', null, null, true);
 $PAGE->requires->js('/course/format/gps/format.js');
 $PAGE->requires->js(new moodle_url('https://maps.googleapis.com/maps/api/js',

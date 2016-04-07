@@ -33,7 +33,6 @@ require_once($CFG->dirroot . '/course/format/gps/locallib.php');
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_gps_renderer extends format_section_renderer_base {
-
     /**
      * Output the html for a single section page .
      *
@@ -115,7 +114,8 @@ class format_gps_renderer extends format_section_renderer_base {
             echo $this->start_section_list();
             echo $this->section_header($thissection, $course, true, $displaysection);
             $courserenderer = $PAGE->get_renderer('core', 'course');
-            print_section($course, $thissection, null, null, true, "100%", false, $displaysection);
+            //print_section($course, $thissection, null, null, true, "100%", false, $displaysection);
+			echo $courserenderer->course_section_cm_list($course, $thissection, $displaysection);
             if ($PAGE->user_is_editing()) {
                 echo $courserenderer->course_section_add_cm_control($course, 0, $displaysection);
             }
@@ -171,7 +171,6 @@ class format_gps_renderer extends format_section_renderer_base {
         // Close single-section div.
         echo html_writer::end_tag('div');
     }
-
     /**
      * Output the html for a multiple section page
      *
@@ -183,24 +182,68 @@ class format_gps_renderer extends format_section_renderer_base {
      */
     public function print_multiple_section_page($course, $sections, $mods, $modnames, $modnamesused) {
         global $PAGE, $SESSION, $DB, $USER;
-
+		
+		$location = $this->gps_get_user_location($USER->id);
+		
         $updateposition = get_string('updateposition', 'format_gps');
         $loadinggps = html_writer::div(get_string('loadinggps', 'format_gps'), 'loadinggps');
         echo $loadinggps;
+		
+		$viewcourse = new moodle_url('/course/view.php', array('id' => $course->id));
         $modaldiv = html_writer::div($updateposition, 'updateposition hide', array('id' => 'updatepositionclick'));
-        echo $modaldiv;
+		
+		if($location){
+			$userlatitude = round($location->latitude, 6);
+			$userlongitude = round($location->longitude, 6);
+			
+			$vars = explode(".",$userlatitude);
+			$deg = $vars[0];
+			$deg = str_replace("-", "", "$deg");
+			$tempma = "0.".$vars[1];
+			$tempma = $tempma * 3600;
+			$min = floor($tempma / 60);
+			$sec = $tempma - ($min*60);
+			$sec = round("$sec", 2);
+			
+			$south = new lang_string('south', 'format_gps');
+			$north = new lang_string('north', 'format_gps');
+			if (strpos($userlatitude, '-') !== false) { 
+				$latPos = $south;
+			} else {
+				$latPos = $north;
+			}
+			$DMS_LAT = "$latPos $deg&deg;$min'$sec\"";
 
-        // Module form with map.
-        $viewcourse = new moodle_url('/course/view.php', array('id' => $course->id));
-        $link = html_writer::link($viewcourse,
-                                get_string('update'),
-                                array('class' => 'gps-continue'));
-        $innerdiv = html_writer::div($link, 'innerdiv', array('id' => 'innerdiv'));
-        $updatecourseviewlink = html_writer::div(($innerdiv), 'buttonbubble', array('id' => 'outerdiv'));
-        $map = html_writer::div('', 'googlemap', array('id' => 'map'));
-        $mapcontainer = html_writer::div($map . $updatecourseviewlink, 'mapcontainer', array('id' => 'mapcontainer'));
-        $modalform = html_writer::div($mapcontainer, 'popupgeo', array('id' => 'popupgeo'));
-        echo $modalform;
+			$vars_ = explode(".",$userlongitude);
+			$deg_ = $vars_[0];
+			$deg_ = str_replace("-", "", "$deg_");
+			$tempma_ = "0.".$vars_[1];
+			
+			$tempma_ = $tempma_ * 3600;
+			$min_ = floor($tempma_ / 60);
+			$sec_ = $tempma_ - ($min_*60);
+			$sec_ = round("$sec_", 2);
+			
+			$west = new lang_string('west', 'format_gps');
+			$east = new lang_string('east', 'format_gps');
+			if(strpos($userlongitude, '-') !== false) { 
+				$latPos = $west;
+			} else {
+				$latPos = $east;
+			}  
+			$DMS_Long = "$latPos $deg_&deg;$min_'$sec_\"";
+			
+			
+			echo '<div id="updatepositionclick" class="hide" ><a href="' . $viewcourse . '" class="gps-continue" style="float: left;">' . $updateposition . '</a><br class="rwd-break"><br class="rwd-break"><a href="http://maps.google.com/?q=' . $userlatitude . ',' . $userlongitude. '" class="gps-continue responsive_button" style="float: left;" target="_blank">Google Maps</a></div>';
+			echo '<div style="float: left; margin-top: 3px; line-height: 1.1em" class="responsive_button">' . $DMS_LAT . '<br />' . $DMS_Long . '</div>';
+			echo '<div style="clear: both; height: 1px; overflow: hidden"></div>';
+		} else {
+			echo '<div id="updatepositionclick" class="hide"><a href="' . $viewcourse . '" class="gps-continue">' . $updateposition . '</a></div>';
+			$nogps = new lang_string('nogps', 'format_gps');
+			echo '<br /><pre style="text-align: center !important;">' . $nogps . '</pre>';
+		}
+		
+		
         $modinfo = get_fast_modinfo($course);
 
         $course = course_get_format($course)->get_course();
@@ -217,7 +260,7 @@ class format_gps_renderer extends format_section_renderer_base {
         // Now the list of sections..
         echo $this->start_section_list();
 
-        $location = $this->gps_get_user_location($USER->id);
+        
 
         foreach ($modinfo->get_section_info_all() as $section => $thissection) {
 
@@ -241,7 +284,7 @@ class format_gps_renderer extends format_section_renderer_base {
             // Show the section if the user is permitted to access it, OR if it's not available.
             // but showavailability is turned on (and there is some available info text).
             $proximity = new stdClass();
-
+			
             if ($thissection->format_gps_restricted == FORMAT_GPS_RESTRICTED) {
                 if ($location) {
                     $proximity = format_gps_check_proximity($thissection, $location);
@@ -335,7 +378,7 @@ class format_gps_renderer extends format_section_renderer_base {
             echo $this->end_section_list();
         }
     }
-
+	
     /**
      * Generate the starting container html for a list of sections
      * @return string HTML to output.

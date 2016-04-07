@@ -220,7 +220,7 @@ YUI().use('event', 'transition', 'panel', 'node', function(Y) {
         console.log('Clicked x = ' + left + ', Clicked y = ' + top);
         googlemap.set('offsetHeight', height - 80);
         googlemap.set('offsetWidth', width - 5);
-        panel.show();
+        //panel.show();
         var mask = Y.one('.yui3-widget-mask');
         popupgeo.removeClass('popupgeo');
         popupgeo.addClass('popupgeoshow');
@@ -241,7 +241,7 @@ YUI().use('event', 'transition', 'panel', 'node', function(Y) {
         popupgeo.set('offsetHeight', height);
         popupgeo.set('offsetWidth', width);
         popupgeo.setXY([left, top]);
-
+		console.log("ja moin");
     }, "#updatepositionclick");
 
     // Create the main modal form.
